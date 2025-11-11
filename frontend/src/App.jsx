@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './App.css';
 
+// 👇 ADICIONA ISSO NO TOPO DO ARQUIVO 👇
+const API_URL = import.meta.env.PROD 
+  ? 'https://crv-auto-backend.onrender.com'  // ⬅️ URL DO SEU RENDER
+  : 'http://localhost:5000';
+
 function App() {
   const [clientes, setClientes] = useState([]);
   const [veiculos, setVeiculos] = useState([]);
@@ -31,8 +36,8 @@ function App() {
   const carregarDados = async () => {
     try {
       const [clientesRes, veiculosRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/clientes'),
-        axios.get('http://localhost:5000/api/veiculos')
+        axios.get(`${API_URL}/api/clientes`),  // ⬅️ MUDEI AQUI
+        axios.get(`${API_URL}/api/veiculos`)   // ⬅️ MUDEI AQUI
       ]);
       setClientes(clientesRes.data);
       setVeiculos(veiculosRes.data);
@@ -55,10 +60,10 @@ function App() {
     e.preventDefault();
     try {
       if (modoEdicao) {
-        await axios.put(`http://localhost:5000/api/clientes/${clienteEditando.id}`, formCliente);
+        await axios.put(`${API_URL}/api/clientes/${clienteEditando.id}`, formCliente);  // ⬅️ MUDEI AQUI
         alert('Cliente atualizado com sucesso!');
       } else {
-        await axios.post('http://localhost:5000/api/clientes', formCliente);
+        await axios.post(`${API_URL}/api/clientes`, formCliente);  // ⬅️ MUDEI AQUI
         alert('Cliente cadastrado com sucesso!');
       }
       
@@ -88,7 +93,7 @@ function App() {
     if (!confirm(`Tem certeza que deseja excluir o cliente "${nome}"?`)) return;
     
     try {
-      await axios.delete(`http://localhost:5000/api/clientes/${id}`);
+      await axios.delete(`${API_URL}/api/clientes/${id}`);  // ⬅️ MUDEI AQUI
       alert('Cliente excluído com sucesso!');
       carregarDados();
     } catch (error) {
@@ -101,7 +106,7 @@ function App() {
   const criarVeiculo = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:5000/api/veiculos', {
+      await axios.post(`${API_URL}/api/veiculos`, {  // ⬅️ MUDEI AQUI
         ...formVeiculo,
         ano: parseInt(formVeiculo.ano),
         cliente_id: parseInt(formVeiculo.cliente_id)
